@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling", "hatch-fancy-pypi-readme"]
+build-backend = "hatchling.build"
+
+[project]
+name = "typed-spotify"
+version = "0.0.1"
+description = "An async and typed Spotify API client for Python."
+license = { file = "LICENSE" }
+readme = "README.md"
+authors = [
+    {name = 'Joey Chilson', email = 'joeychilson@outlook.com'}
+]
+requires-python = ">=3.9"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "aiohttp>=3.11.11",
+    "httpx>=0.28.1",
+    "pydantic>=2.10.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/joeychilson/typed-spotify"
+Documentation = "https://github.com/joeychilson/typed-spotify/blob/main/README.md"
+Repository = "https://github.com/joeychilson/typed-spotify.git"
+Issues = "https://github.com/joeychilson/typed-spotify/issues"
+
+[dependency-groups]
+lint = [
+    "ruff>=0.9.3",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["typed_spotify"]
+
+[tool.ruff]
+line-length = 120
