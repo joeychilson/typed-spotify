@@ -17,7 +17,7 @@ class ExternalIds(BaseModel):
     ean: Optional[str] = None
 
 
-class ImageObject(BaseModel):
+class Image(BaseModel):
     url: str
     width: Optional[int] = None
     height: Optional[int] = None
@@ -61,7 +61,7 @@ class Narrator(BaseModel):
 
 
 # Generic Models
-class PagingObject[T](BaseModel):
+class Paging[T](BaseModel):
     href: str
     items: List[T]
     limit: int
@@ -113,8 +113,8 @@ class CursorPagingResponse[T](BaseModel):
     )
 
 
-class PagingObjectResponse[T](BaseModel):
-    items: PagingObject[T] = Field(
+class PagingResponse[T](BaseModel):
+    items: Paging[T] = Field(
         validation_alias=AliasChoices(
             "categories",
             "albums",
@@ -147,7 +147,7 @@ class User(SimplifiedUser):
     country: Optional[str] = None
     email: Optional[str] = None
     explicit_content: Optional[ExplicitContent] = None
-    images: List[ImageObject]
+    images: List[Image]
     product: Optional[str] = None
 
 
@@ -164,7 +164,7 @@ class SimplifiedArtist(BaseModel):
 class Artist(SimplifiedArtist):
     followers: Followers
     genres: List[str] = Field(default_factory=list)
-    images: List[ImageObject]
+    images: List[Image]
     popularity: int
 
 
@@ -181,7 +181,7 @@ class SimplifiedAlbum(BaseModel):
     release_date: str
     release_date_precision: Literal["year", "month", "day"]
     artists: List[SimplifiedArtist]
-    images: List[ImageObject]
+    images: List[Image]
     external_urls: ExternalUrls
     available_markets: List[str]
     restrictions: Optional[Restrictions] = None
@@ -189,7 +189,7 @@ class SimplifiedAlbum(BaseModel):
 
 class Album(SimplifiedAlbum):
     external_ids: ExternalIds
-    tracks: PagingObject["SimplifiedTrack"]
+    tracks: Paging["SimplifiedTrack"]
     copyrights: List[Copyright]
     label: str
     popularity: int
@@ -254,7 +254,7 @@ class SimplifiedPlaylist(BaseModel):
     public: Optional[bool] = None
     collaborative: bool = False
     owner: SimplifiedUser
-    images: List[ImageObject]
+    images: List[Image]
     tracks: PlaylistTracksRef
     external_urls: ExternalUrls
 
@@ -281,7 +281,7 @@ class SimplifiedShow(BaseModel):
     media_type: str
     is_externally_hosted: bool
     external_urls: ExternalUrls
-    images: List[ImageObject]
+    images: List[Image]
     languages: List[str]
     total_episodes: int
     available_markets: List[str]
@@ -290,7 +290,7 @@ class SimplifiedShow(BaseModel):
 
 
 class Show(SimplifiedShow):
-    episodes: PagingObject["SimplifiedEpisode"]
+    episodes: Paging["SimplifiedEpisode"]
 
 
 class SimplifiedEpisode(BaseModel):
@@ -309,7 +309,7 @@ class SimplifiedEpisode(BaseModel):
     is_playable: bool
     languages: List[str]
     external_urls: ExternalUrls
-    images: List[ImageObject]
+    images: List[Image]
     resume_point: Optional[ResumePoint] = None
     restrictions: Optional[Restrictions] = None
 
@@ -332,7 +332,7 @@ class SimplifiedAudiobook(BaseModel):
     publisher: str
     explicit: bool
     external_urls: ExternalUrls
-    images: List[ImageObject]
+    images: List[Image]
     languages: List[str]
     media_type: str
     total_chapters: int
@@ -342,7 +342,7 @@ class SimplifiedAudiobook(BaseModel):
 
 
 class Audiobook(SimplifiedAudiobook):
-    chapters: PagingObject["SimplifiedChapter"]
+    chapters: Paging["SimplifiedChapter"]
     copyrights: List[Copyright] = Field(default_factory=list)
 
 
@@ -358,7 +358,7 @@ class SimplifiedChapter(BaseModel):
     duration_ms: int
     explicit: bool
     external_urls: ExternalUrls
-    images: List[ImageObject]
+    images: List[Image]
     is_playable: bool
     languages: List[str]
     release_date: str
@@ -444,18 +444,18 @@ class Category(BaseModel):
     uri: str
     href: str
     name: str
-    icons: List[ImageObject]
+    icons: List[Image]
 
 
 # Search Models
 class SearchResults(BaseModel):
-    tracks: Optional[PagingObject[Track]] = None
-    artists: Optional[PagingObject[Artist]] = None
-    albums: Optional[PagingObject[SimplifiedAlbum]] = None
-    playlists: Optional[PagingObject[SimplifiedPlaylist]] = None
-    shows: Optional[PagingObject[SimplifiedShow]] = None
-    episodes: Optional[PagingObject[SimplifiedEpisode]] = None
-    audiobooks: Optional[PagingObject[SimplifiedAudiobook]] = None
+    tracks: Optional[Paging[Track]] = None
+    artists: Optional[Paging[Artist]] = None
+    albums: Optional[Paging[SimplifiedAlbum]] = None
+    playlists: Optional[Paging[SimplifiedPlaylist]] = None
+    shows: Optional[Paging[SimplifiedShow]] = None
+    episodes: Optional[Paging[SimplifiedEpisode]] = None
+    audiobooks: Optional[Paging[SimplifiedAudiobook]] = None
 
 
 # Market Models

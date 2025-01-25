@@ -22,10 +22,10 @@ from typed_spotify.models import (
     CursorPaging,
     Device,
     Episode,
-    ImageObject,
+    Image,
     ItemList,
     Markets,
-    PagingObject,
+    Paging,
     PlaybackQueue,
     PlaybackState,
     PlayHistoryPage,
@@ -104,7 +104,7 @@ class SpotifyClient:
 
     async def get_album_tracks(
         self, album_id: str, limit: int = 20, offset: int = 0, market: Optional[str] = None
-    ) -> PagingObject[SimplifiedTrack]:
+    ) -> Paging[SimplifiedTrack]:
         """Get Spotify catalog information about an album's tracks.
 
         Args:
@@ -121,12 +121,12 @@ class SpotifyClient:
             params["market"] = market
 
         return await self._request(
-            "GET", f"/albums/{album_id}/tracks", params=params, response_model=PagingObject[SimplifiedTrack]
+            "GET", f"/albums/{album_id}/tracks", params=params, response_model=Paging[SimplifiedTrack]
         )
 
     async def get_saved_albums(
         self, limit: int = 20, offset: int = 0, market: Optional[str] = None
-    ) -> PagingObject[SavedItem[Album]]:
+    ) -> Paging[SavedItem[Album]]:
         """Get user's saved albums.
 
         Scopes:
@@ -144,7 +144,7 @@ class SpotifyClient:
         if market:
             params["market"] = market
 
-        return await self._request("GET", "/me/albums", params=params, response_model=PagingObject[SavedItem[Album]])
+        return await self._request("GET", "/me/albums", params=params, response_model=Paging[SavedItem[Album]])
 
     async def save_albums(self, album_ids: List[str]) -> None:
         """Save albums to current user's library.
@@ -194,7 +194,7 @@ class SpotifyClient:
         )
         return response.root
 
-    async def get_new_releases(self, limit: int = 20, offset: int = 0) -> PagingObject[SimplifiedAlbum]:
+    async def get_new_releases(self, limit: int = 20, offset: int = 0) -> Paging[SimplifiedAlbum]:
         """Get new album releases featured in Spotify.
 
         Args:
@@ -241,7 +241,7 @@ class SpotifyClient:
         offset: int = 0,
         include_groups: Optional[List[Literal["album", "single", "appears_on", "compilation"]]] = None,
         market: Optional[str] = None,
-    ) -> PagingObject[SimplifiedAlbum]:
+    ) -> Paging[SimplifiedAlbum]:
         """Get Spotify catalog information about an artist's albums.
 
         Args:
@@ -262,7 +262,7 @@ class SpotifyClient:
             params["market"] = market
 
         return await self._request(
-            "GET", f"/artists/{artist_id}/albums", params=params, response_model=PagingObject[SimplifiedAlbum]
+            "GET", f"/artists/{artist_id}/albums", params=params, response_model=Paging[SimplifiedAlbum]
         )
 
     async def get_artist_top_tracks(self, artist_id: str, market: str) -> List[Track]:
@@ -312,7 +312,7 @@ class SpotifyClient:
 
     async def get_audiobook_chapters(
         self, audiobook_id: str, limit: int = 20, offset: int = 0, market: Optional[str] = None
-    ) -> PagingObject[SimplifiedChapter]:
+    ) -> Paging[SimplifiedChapter]:
         """Get Spotify catalog information about an audiobook's chapters.
 
         Notes:
@@ -332,10 +332,10 @@ class SpotifyClient:
             params["market"] = market
 
         return await self._request(
-            "GET", f"/audiobooks/{audiobook_id}/chapters", params=params, response_model=PagingObject[SimplifiedChapter]
+            "GET", f"/audiobooks/{audiobook_id}/chapters", params=params, response_model=Paging[SimplifiedChapter]
         )
 
-    async def get_saved_audiobooks(self, limit: int = 20, offset: int = 0) -> PagingObject[SimplifiedAudiobook]:
+    async def get_saved_audiobooks(self, limit: int = 20, offset: int = 0) -> Paging[SimplifiedAudiobook]:
         """Get user's saved audiobooks.
 
         Scopes:
@@ -352,7 +352,7 @@ class SpotifyClient:
             "GET",
             "/me/audiobooks",
             params={"limit": limit, "offset": offset},
-            response_model=PagingObject[SimplifiedAudiobook],
+            response_model=Paging[SimplifiedAudiobook],
         )
 
     async def save_audiobooks(self, audiobook_ids: List[str]) -> None:
@@ -498,7 +498,7 @@ class SpotifyClient:
 
     async def get_saved_episodes(
         self, limit: int = 20, offset: int = 0, market: Optional[str] = None
-    ) -> PagingObject[SavedItem[Episode]]:
+    ) -> Paging[SavedItem[Episode]]:
         """Get a list of the episodes saved in the current user's library.
 
         Scopes:
@@ -520,9 +520,7 @@ class SpotifyClient:
         if market:
             params["market"] = market
 
-        return await self._request(
-            "GET", "/me/episodes", params=params, response_model=PagingObject[SavedItem[Episode]]
-        )
+        return await self._request("GET", "/me/episodes", params=params, response_model=Paging[SavedItem[Episode]])
 
     async def save_episodes(self, episode_ids: List[str]) -> None:
         """Save episodes to current user's library.
@@ -957,7 +955,7 @@ class SpotifyClient:
         fields: Optional[str] = None,
         additional_types: Optional[List[Literal["track", "episode"]]] = None,
         market: Optional[str] = None,
-    ) -> PagingObject[PlaylistTrack]:
+    ) -> Paging[PlaylistTrack]:
         """Get full details of the items of a playlist owned by a Spotify user.
 
         Scopes:
@@ -993,7 +991,7 @@ class SpotifyClient:
             params["additional_types"] = ",".join(additional_types)
 
         return await self._request(
-            "GET", f"/playlists/{playlist_id}/tracks", params=params, response_model=PagingObject[PlaylistTrack]
+            "GET", f"/playlists/{playlist_id}/tracks", params=params, response_model=Paging[PlaylistTrack]
         )
 
     async def replace_playlist_items(self, playlist_id: str, uris: List[str]) -> str:
@@ -1117,14 +1115,11 @@ class SpotifyClient:
             data["snapshot_id"] = snapshot_id
 
         response = await self._request(
-            "DELETE",
-            f"/playlists/{playlist_id}/tracks",
-            json=data,
-            response_model=PlaylistSnapshotId,
+            "DELETE", f"/playlists/{playlist_id}/tracks", json=data, response_model=PlaylistSnapshotId
         )
         return response.snapshot_id
 
-    async def get_current_user_playlists(self, limit: int = 20, offset: int = 0) -> PagingObject[SimplifiedPlaylist]:
+    async def get_current_user_playlists(self, limit: int = 20, offset: int = 0) -> Paging[SimplifiedPlaylist]:
         """Get a list of the playlists owned or followed by the current user.
 
         Scopes:
@@ -1145,16 +1140,9 @@ class SpotifyClient:
 
         params = {"limit": limit, "offset": offset}
 
-        return await self._request(
-            "GET",
-            "/me/playlists",
-            params=params,
-            response_model=PagingObject[SimplifiedPlaylist],
-        )
+        return await self._request("GET", "/me/playlists", params=params, response_model=Paging[SimplifiedPlaylist])
 
-    async def get_user_playlists(
-        self, user_id: str, limit: int = 20, offset: int = 0
-    ) -> PagingObject[SimplifiedPlaylist]:
+    async def get_user_playlists(self, user_id: str, limit: int = 20, offset: int = 0) -> Paging[SimplifiedPlaylist]:
         """Get a list of the playlists owned or followed by a Spotify user.
 
         Scopes:
@@ -1178,7 +1166,7 @@ class SpotifyClient:
         params = {"limit": limit, "offset": offset}
 
         return await self._request(
-            "GET", f"/users/{user_id}/playlists", params=params, response_model=PagingObject[SimplifiedPlaylist]
+            "GET", f"/users/{user_id}/playlists", params=params, response_model=Paging[SimplifiedPlaylist]
         )
 
     async def create_playlist(
@@ -1221,7 +1209,7 @@ class SpotifyClient:
 
         return await self._request("POST", f"/users/{user_id}/playlists", json=data, response_model=Playlist)
 
-    async def get_playlist_cover_image(self, playlist_id: str) -> List[ImageObject]:
+    async def get_playlist_cover_image(self, playlist_id: str) -> List[Image]:
         """Get the current image associated with a specific playlist.
 
         Notes:
@@ -1234,7 +1222,7 @@ class SpotifyClient:
         Returns:
             List of image objects ordered by size (largest first)
         """
-        response = await self._request("GET", f"/playlists/{playlist_id}/images", response_model=ItemList[ImageObject])
+        response = await self._request("GET", f"/playlists/{playlist_id}/images", response_model=ItemList[Image])
         return response.items
 
     async def add_custom_playlist_cover_image(self, playlist_id: str, image_data_base64: str) -> None:
@@ -1370,7 +1358,7 @@ class SpotifyClient:
 
     async def get_show_episodes(
         self, show_id: str, market: Optional[str] = None, limit: int = 20, offset: int = 0
-    ) -> PagingObject[SimplifiedEpisode]:
+    ) -> Paging[SimplifiedEpisode]:
         """Get Spotify catalog information about a show's episodes.
 
         Scopes:
@@ -1398,10 +1386,10 @@ class SpotifyClient:
             params["market"] = market
 
         return await self._request(
-            "GET", f"/shows/{show_id}/episodes", params=params, response_model=PagingObject[SimplifiedEpisode]
+            "GET", f"/shows/{show_id}/episodes", params=params, response_model=Paging[SimplifiedEpisode]
         )
 
-    async def get_saved_shows(self, limit: int = 20, offset: int = 0) -> PagingObject[SavedItem[Show]]:
+    async def get_saved_shows(self, limit: int = 20, offset: int = 0) -> Paging[SavedItem[Show]]:
         """Get a list of shows saved in the current user's library.
 
         Scopes:
@@ -1419,7 +1407,7 @@ class SpotifyClient:
 
         params = {"limit": limit, "offset": offset}
 
-        return await self._request("GET", "/me/shows", params=params, response_model=PagingObject[SavedItem[Show]])
+        return await self._request("GET", "/me/shows", params=params, response_model=Paging[SavedItem[Show]])
 
     async def save_shows(self, show_ids: List[str]) -> None:
         """Save one or more shows to current user's library.
@@ -1527,7 +1515,7 @@ class SpotifyClient:
 
     async def get_saved_tracks(
         self, limit: int = 20, offset: int = 0, market: Optional[str] = None
-    ) -> PagingObject[SavedItem[Track]]:
+    ) -> Paging[SavedItem[Track]]:
         """Get tracks saved in the current user's 'Your Music' library.
 
         Scopes:
@@ -1553,7 +1541,7 @@ class SpotifyClient:
         if market:
             params["market"] = market
 
-        return await self._request("GET", "/me/tracks", params=params, response_model=PagingObject[SavedItem[Track]])
+        return await self._request("GET", "/me/tracks", params=params, response_model=Paging[SavedItem[Track]])
 
     async def save_tracks(self, track_ids: List[str]) -> None:
         """Save tracks to current user's 'Your Music' library.
@@ -1625,7 +1613,7 @@ class SpotifyClient:
         time_range: Literal["long_term", "medium_term", "short_term"] = "medium_term",
         limit: int = 20,
         offset: int = 0,
-    ) -> Union[PagingObject[Artist], PagingObject[Track]]:
+    ) -> Union[Paging[Artist], Paging[Track]]:
         """Get the current user's top artists or tracks based on calculated affinity.
 
         Scopes:
@@ -1648,7 +1636,7 @@ class SpotifyClient:
 
         params = {"time_range": time_range, "limit": limit, "offset": offset}
 
-        response_model = PagingObject[Artist] if type == "artists" else PagingObject[Track]
+        response_model = Paging[Artist] if type == "artists" else Paging[Track]
 
         return await self._request("GET", f"/me/top/{type}", params=params, response_model=response_model)
 
