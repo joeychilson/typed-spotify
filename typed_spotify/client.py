@@ -45,7 +45,7 @@ from typed_spotify.models import (
     SimplifiedUser,
     Track,
     User,
-    PagingObjectResponse,
+    PagingResponse,
     CursorPagingResponse,
 )
 
@@ -208,7 +208,7 @@ class SpotifyClient:
             "GET",
             "/browse/new-releases",
             params={"limit": limit, "offset": offset},
-            response_model=PagingObjectResponse[SimplifiedAlbum],
+            response_model=PagingResponse[SimplifiedAlbum],
         )
         return response.items
 
