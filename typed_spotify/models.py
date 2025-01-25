@@ -82,7 +82,16 @@ class CursorPaging(BaseModel, Generic[T]):
 
 class SavedItem[T](BaseModel):
     added_at: datetime
-    item: T = Field(validation_alias=AliasChoices("show", "track", "album", "episode", "audiobook"))
+    item: T = Field(
+        validation_alias=AliasChoices(
+            "albums",
+            "artists",
+            "tracks",
+            "shows",
+            "episodes",
+            "audiobooks",
+        )
+    )
 
 
 class ItemList[T](BaseModel):
