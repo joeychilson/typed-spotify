@@ -103,11 +103,7 @@ class SpotifyClient:
         return response.items
 
     async def get_album_tracks(
-        self,
-        album_id: str,
-        limit: int = 20,
-        offset: int = 0,
-        market: Optional[str] = None,
+        self, album_id: str, limit: int = 20, offset: int = 0, market: Optional[str] = None
     ) -> PagingObject[SimplifiedTrack]:
         """Get Spotify catalog information about an album's tracks.
 
@@ -125,10 +121,7 @@ class SpotifyClient:
             params["market"] = market
 
         return await self._request(
-            "GET",
-            f"/albums/{album_id}/tracks",
-            params=params,
-            response_model=PagingObject[SimplifiedTrack],
+            "GET", f"/albums/{album_id}/tracks", params=params, response_model=PagingObject[SimplifiedTrack]
         )
 
     async def get_saved_albums(
@@ -151,12 +144,7 @@ class SpotifyClient:
         if market:
             params["market"] = market
 
-        return await self._request(
-            "GET",
-            "/me/albums",
-            params=params,
-            response_model=PagingObject[SavedItem[Album]],
-        )
+        return await self._request("GET", "/me/albums", params=params, response_model=PagingObject[SavedItem[Album]])
 
     async def save_albums(self, album_ids: List[str]) -> None:
         """Save albums to current user's library.
@@ -202,10 +190,7 @@ class SpotifyClient:
             raise ValidationError("Maximum of 50 album IDs allowed")
 
         response = await self._request(
-            "GET",
-            "/me/albums/contains",
-            params={"ids": ",".join(album_ids)},
-            response_model=BooleanArray,
+            "GET", "/me/albums/contains", params={"ids": ",".join(album_ids)}, response_model=BooleanArray
         )
         return response.root
 
@@ -245,10 +230,7 @@ class SpotifyClient:
             raise ValidationError("Maximum of 50 artist IDs allowed")
 
         response = await self._request(
-            "GET",
-            "/artists",
-            params={"ids": ",".join(artist_ids)},
-            response_model=ItemList[Artist],
+            "GET", "/artists", params={"ids": ",".join(artist_ids)}, response_model=ItemList[Artist]
         )
         return response.items
 
@@ -280,10 +262,7 @@ class SpotifyClient:
             params["market"] = market
 
         return await self._request(
-            "GET",
-            f"/artists/{artist_id}/albums",
-            params=params,
-            response_model=PagingObject[SimplifiedAlbum],
+            "GET", f"/artists/{artist_id}/albums", params=params, response_model=PagingObject[SimplifiedAlbum]
         )
 
     async def get_artist_top_tracks(self, artist_id: str, market: str) -> List[Track]:
@@ -294,10 +273,7 @@ class SpotifyClient:
             market: An ISO 3166-1 alpha-2 country code for content availability
         """
         response = await self._request(
-            "GET",
-            f"/artists/{artist_id}/top-tracks",
-            params={"market": market},
-            response_model=ItemList[Track],
+            "GET", f"/artists/{artist_id}/top-tracks", params={"market": market}, response_model=ItemList[Track]
         )
         return response.items
 
@@ -312,12 +288,7 @@ class SpotifyClient:
             market: An ISO 3166-1 alpha-2 country code for content availability
         """
         params = {"market": market} if market else None
-        return await self._request(
-            "GET",
-            f"/audiobooks/{audiobook_id}",
-            params=params,
-            response_model=Audiobook,
-        )
+        return await self._request("GET", f"/audiobooks/{audiobook_id}", params=params, response_model=Audiobook)
 
     async def get_several_audiobooks(self, audiobook_ids: List[str], market: Optional[str] = None) -> List[Audiobook]:
         """Get Spotify catalog information for several audiobooks.
@@ -340,11 +311,7 @@ class SpotifyClient:
         return response.items
 
     async def get_audiobook_chapters(
-        self,
-        audiobook_id: str,
-        limit: int = 20,
-        offset: int = 0,
-        market: Optional[str] = None,
+        self, audiobook_id: str, limit: int = 20, offset: int = 0, market: Optional[str] = None
     ) -> PagingObject[SimplifiedChapter]:
         """Get Spotify catalog information about an audiobook's chapters.
 
@@ -365,10 +332,7 @@ class SpotifyClient:
             params["market"] = market
 
         return await self._request(
-            "GET",
-            f"/audiobooks/{audiobook_id}/chapters",
-            params=params,
-            response_model=PagingObject[SimplifiedChapter],
+            "GET", f"/audiobooks/{audiobook_id}/chapters", params=params, response_model=PagingObject[SimplifiedChapter]
         )
 
     async def get_saved_audiobooks(self, limit: int = 20, offset: int = 0) -> PagingObject[SimplifiedAudiobook]:
@@ -432,10 +396,7 @@ class SpotifyClient:
             raise ValidationError("Maximum of 50 audiobook IDs allowed")
 
         response = await self._request(
-            "GET",
-            "/me/audiobooks/contains",
-            params={"ids": ",".join(audiobook_ids)},
-            response_model=BooleanArray,
+            "GET", "/me/audiobooks/contains", params={"ids": ",".join(audiobook_ids)}, response_model=BooleanArray
         )
         return response.root
 
@@ -447,12 +408,7 @@ class SpotifyClient:
             locale: Desired language (ISO 639-1 + ISO 3166-1 alpha-2 country code, e.g. 'es_MX')
         """
         params = {"locale": locale} if locale else None
-        return await self._request(
-            "GET",
-            f"/browse/categories/{category_id}",
-            params=params,
-            response_model=Category,
-        )
+        return await self._request("GET", f"/browse/categories/{category_id}", params=params, response_model=Category)
 
     async def get_several_categories(
         self, limit: int = 20, offset: int = 0, locale: Optional[str] = None
@@ -471,12 +427,7 @@ class SpotifyClient:
         if locale:
             params["locale"] = locale
 
-        response = await self._request(
-            "GET",
-            "/browse/categories",
-            params=params,
-            response_model=ItemList[Category],
-        )
+        response = await self._request("GET", "/browse/categories", params=params, response_model=ItemList[Category])
         return response.items
 
     async def get_chapter(self, chapter_id: str, market: Optional[str] = None) -> Chapter:
@@ -570,10 +521,7 @@ class SpotifyClient:
             params["market"] = market
 
         return await self._request(
-            "GET",
-            "/me/episodes",
-            params=params,
-            response_model=PagingObject[SavedItem[Episode]],
+            "GET", "/me/episodes", params=params, response_model=PagingObject[SavedItem[Episode]]
         )
 
     async def save_episodes(self, episode_ids: List[str]) -> None:
@@ -626,10 +574,7 @@ class SpotifyClient:
             raise ValidationError("Maximum of 50 episode IDs allowed")
 
         response = await self._request(
-            "GET",
-            "/me/episodes/contains",
-            params={"ids": ",".join(episode_ids)},
-            response_model=BooleanArray,
+            "GET", "/me/episodes/contains", params={"ids": ",".join(episode_ids)}, response_model=BooleanArray
         )
         return response.root
 
@@ -642,9 +587,7 @@ class SpotifyClient:
         return await self._request("GET", "/markets", response_model=Markets)
 
     async def get_playback_state(
-        self,
-        market: Optional[str] = None,
-        additional_types: Optional[List[Literal["track", "episode"]]] = None,
+        self, market: Optional[str] = None, additional_types: Optional[List[Literal["track", "episode"]]] = None
     ) -> Optional[PlaybackState]:
         """Get information about the user's current playback state.
 
@@ -664,9 +607,7 @@ class SpotifyClient:
         return await self._request("GET", "/me/player", params=params, response_model=PlaybackState)
 
     async def get_currently_playing(
-        self,
-        additional_types: Optional[List[Literal["track", "episode"]]] = None,
-        market: Optional[str] = None,
+        self, additional_types: Optional[List[Literal["track", "episode"]]] = None, market: Optional[str] = None
     ) -> Optional[PlaybackState]:
         """Get the object currently being played on the user's account.
 
@@ -683,12 +624,7 @@ class SpotifyClient:
         if additional_types:
             params["additional_types"] = ",".join(additional_types)
 
-        return await self._request(
-            "GET",
-            "/me/player/currently-playing",
-            params=params,
-            response_model=PlaybackState,
-        )
+        return await self._request("GET", "/me/player/currently-playing", params=params, response_model=PlaybackState)
 
     async def get_recently_played(
         self, limit: int = 20, after: Optional[int] = None, before: Optional[int] = None
@@ -714,12 +650,7 @@ class SpotifyClient:
         if before:
             params["before"] = before
 
-        return await self._request(
-            "GET",
-            "/me/player/recently-played",
-            params=params,
-            response_model=PlayHistoryPage,
-        )
+        return await self._request("GET", "/me/player/recently-played", params=params, response_model=PlayHistoryPage)
 
     async def get_queue(self) -> PlaybackQueue:
         """Get the user's queue.
@@ -1062,10 +993,7 @@ class SpotifyClient:
             params["additional_types"] = ",".join(additional_types)
 
         return await self._request(
-            "GET",
-            f"/playlists/{playlist_id}/tracks",
-            params=params,
-            response_model=PagingObject[PlaylistTrack],
+            "GET", f"/playlists/{playlist_id}/tracks", params=params, response_model=PagingObject[PlaylistTrack]
         )
 
     async def replace_playlist_items(self, playlist_id: str, uris: List[str]) -> str:
@@ -1090,10 +1018,7 @@ class SpotifyClient:
             raise ValidationError("Maximum of 100 URIs allowed")
 
         response = await self._request(
-            "PUT",
-            f"/playlists/{playlist_id}/tracks",
-            json={"uris": uris},
-            response_model=PlaylistSnapshotId,
+            "PUT", f"/playlists/{playlist_id}/tracks", json={"uris": uris}, response_model=PlaylistSnapshotId
         )
         return response.snapshot_id
 
@@ -1130,10 +1055,7 @@ class SpotifyClient:
             data["snapshot_id"] = snapshot_id
 
         response = await self._request(
-            "PUT",
-            f"/playlists/{playlist_id}/tracks",
-            json=data,
-            response_model=PlaylistSnapshotId,
+            "PUT", f"/playlists/{playlist_id}/tracks", json=data, response_model=PlaylistSnapshotId
         )
         return response.snapshot_id
 
@@ -1164,10 +1086,7 @@ class SpotifyClient:
             data["position"] = position
 
         response = await self._request(
-            "POST",
-            f"/playlists/{playlist_id}/tracks",
-            json=data,
-            response_model=PlaylistSnapshotId,
+            "POST", f"/playlists/{playlist_id}/tracks", json=data, response_model=PlaylistSnapshotId
         )
         return response.snapshot_id
 
@@ -1259,10 +1178,7 @@ class SpotifyClient:
         params = {"limit": limit, "offset": offset}
 
         return await self._request(
-            "GET",
-            f"/users/{user_id}/playlists",
-            params=params,
-            response_model=PagingObject[SimplifiedPlaylist],
+            "GET", f"/users/{user_id}/playlists", params=params, response_model=PagingObject[SimplifiedPlaylist]
         )
 
     async def create_playlist(
@@ -1318,11 +1234,7 @@ class SpotifyClient:
         Returns:
             List of image objects ordered by size (largest first)
         """
-        response = await self._request(
-            "GET",
-            f"/playlists/{playlist_id}/images",
-            response_model=ItemList[ImageObject],
-        )
+        response = await self._request("GET", f"/playlists/{playlist_id}/images", response_model=ItemList[ImageObject])
         return response.items
 
     async def add_custom_playlist_cover_image(self, playlist_id: str, image_data_base64: str) -> None:
@@ -1359,10 +1271,7 @@ class SpotifyClient:
             raise ValidationError("Image data exceeds 256 KB limit")
 
         await self._request(
-            "PUT",
-            f"/playlists/{playlist_id}/images",
-            data=image_data_base64,
-            headers={"Content-Type": "image/jpeg"},
+            "PUT", f"/playlists/{playlist_id}/images", data=image_data_base64, headers={"Content-Type": "image/jpeg"}
         )
 
     async def search(
@@ -1460,11 +1369,7 @@ class SpotifyClient:
         return response.items
 
     async def get_show_episodes(
-        self,
-        show_id: str,
-        market: Optional[str] = None,
-        limit: int = 20,
-        offset: int = 0,
+        self, show_id: str, market: Optional[str] = None, limit: int = 20, offset: int = 0
     ) -> PagingObject[SimplifiedEpisode]:
         """Get Spotify catalog information about a show's episodes.
 
@@ -1493,10 +1398,7 @@ class SpotifyClient:
             params["market"] = market
 
         return await self._request(
-            "GET",
-            f"/shows/{show_id}/episodes",
-            params=params,
-            response_model=PagingObject[SimplifiedEpisode],
+            "GET", f"/shows/{show_id}/episodes", params=params, response_model=PagingObject[SimplifiedEpisode]
         )
 
     async def get_saved_shows(self, limit: int = 20, offset: int = 0) -> PagingObject[SavedItem[Show]]:
@@ -1517,12 +1419,7 @@ class SpotifyClient:
 
         params = {"limit": limit, "offset": offset}
 
-        return await self._request(
-            "GET",
-            "/me/shows",
-            params=params,
-            response_model=PagingObject[SavedItem[Show]],
-        )
+        return await self._request("GET", "/me/shows", params=params, response_model=PagingObject[SavedItem[Show]])
 
     async def save_shows(self, show_ids: List[str]) -> None:
         """Save one or more shows to current user's library.
@@ -1578,10 +1475,7 @@ class SpotifyClient:
             raise ValidationError("Maximum of 50 show IDs allowed")
 
         response = await self._request(
-            "GET",
-            "/me/shows/contains",
-            params={"ids": ",".join(show_ids)},
-            response_model=BooleanArray,
+            "GET", "/me/shows/contains", params={"ids": ",".join(show_ids)}, response_model=BooleanArray
         )
         return response.root
 
@@ -1659,12 +1553,7 @@ class SpotifyClient:
         if market:
             params["market"] = market
 
-        return await self._request(
-            "GET",
-            "/me/tracks",
-            params=params,
-            response_model=PagingObject[SavedItem[Track]],
-        )
+        return await self._request("GET", "/me/tracks", params=params, response_model=PagingObject[SavedItem[Track]])
 
     async def save_tracks(self, track_ids: List[str]) -> None:
         """Save tracks to current user's 'Your Music' library.
@@ -1711,10 +1600,7 @@ class SpotifyClient:
             raise ValidationError("Maximum of 50 track IDs allowed")
 
         response = await self._request(
-            "GET",
-            "/me/tracks/contains",
-            params={"ids": ",".join(track_ids)},
-            response_model=BooleanArray,
+            "GET", "/me/tracks/contains", params={"ids": ",".join(track_ids)}, response_model=BooleanArray
         )
         return response.root
 
@@ -1826,10 +1712,7 @@ class SpotifyClient:
             params["after"] = after
 
         response = await self._request(
-            "GET",
-            "/me/following",
-            params=params,
-            response_model=CursorPagingResponse[CursorPaging[Artist]],
+            "GET", "/me/following", params=params, response_model=CursorPagingResponse[CursorPaging[Artist]]
         )
         return response.items
 
@@ -1880,10 +1763,7 @@ class SpotifyClient:
             raise ValidationError("Maximum of 50 IDs allowed")
 
         response = await self._request(
-            "GET",
-            "/me/following/contains",
-            params={"type": type, "ids": ",".join(ids)},
-            response_model=BooleanArray,
+            "GET", "/me/following/contains", params={"type": type, "ids": ",".join(ids)}, response_model=BooleanArray
         )
         return response.root
 
