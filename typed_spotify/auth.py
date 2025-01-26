@@ -7,7 +7,7 @@ import webbrowser
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Optional, Dict
+from typing import Optional, Dict, Union, List
 from urllib.parse import urlencode
 
 from aiohttp import web
@@ -25,7 +25,7 @@ class Token(BaseModel):
     token_type: str = Field(default="Bearer", pattern="^Bearer$")
     access_token: str
     refresh_token: Optional[str] = None
-    scope: str = Field(default="")
+    scope: Union[str, List[str]] = Field(default="")
     expires_in: int = Field(gt=0)
     expires_at: Optional[datetime] = None
 
@@ -40,9 +40,7 @@ class Token(BaseModel):
     def set_expires_at(cls, v: Optional[datetime], values: dict) -> datetime:
         """Set expires_at if not provided using expires_in."""
         if not v and "expires_in" in values:
-            return datetime.now(timezone.utc) + timedelta(
-                seconds=values["expires_in"] - 60
-            )
+            return datetime.now(timezone.utc) + timedelta(seconds=values["expires_in"] - 60)
         return v
 
 
@@ -134,7 +132,7 @@ class SpotifyAuth:
         self,
         client_id: str,
         client_secret: str,
-        scope: Optional[str] = None,
+        scope: Optional[Union[str, List[str]]] = None,
         token_storage: Optional[TokenStorage] = None,
         callback_port: int = 9090,
         request_timeout: float = 30.0,
@@ -142,10 +140,14 @@ class SpotifyAuth:
         self.client_id = client_id
         self.client_secret = client_secret
         self.redirect_uri = f"http://localhost:{callback_port}/callback"
-        self.scope = scope
         self.token_storage = token_storage or FileTokenStorage()
         self.callback_port = callback_port
         self.client = AsyncClient(timeout=request_timeout)
+
+        if isinstance(scope, list):
+            self.scope = " ".join(scope)
+        else:
+            self.scope = scope or ""
 
     async def __aenter__(self) -> "SpotifyAuth":
         """Context manager entry."""
@@ -209,9 +211,7 @@ class SpotifyAuth:
 
         if current_token and current_token.refresh_token:
             try:
-                return (
-                    await self.refresh_token(current_token.refresh_token)
-                ).access_token
+                return (await self.refresh_token(current_token.refresh_token)).access_token
             except AuthenticationError:
                 logger.info("Token refresh failed, starting new authorization flow")
 
@@ -225,19 +225,13 @@ class SpotifyAuth:
 
         async def callback_handler(request: web.Request) -> web.Response:
             if request.query.get("state") != state:
-                auth_code_future.set_exception(
-                    AuthenticationError("State mismatch, possible CSRF attack")
-                )
+                auth_code_future.set_exception(AuthenticationError("State mismatch, possible CSRF attack"))
                 return web.Response(
                     content_type="text/html",
                     text="<h1>Authorization Failed</h1><p>Invalid state parameter.</p>",
                 )
             if "error" in request.query:
-                auth_code_future.set_exception(
-                    AuthenticationError(
-                        f"Authorization failed: {request.query['error']}"
-                    )
-                )
+                auth_code_future.set_exception(AuthenticationError(f"Authorization failed: {request.query['error']}"))
                 return web.Response(
                     content_type="text/html",
                     text="<h1>Authorization Failed</h1><p>Please check the application logs.</p>",

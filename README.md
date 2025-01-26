@@ -17,7 +17,7 @@ async def main():
     auth = SpotifyAuth(
         client_id=os.getenv("SPOTIFY_CLIENT_ID"),
         client_secret=os.getenv("SPOTIFY_CLIENT_SECRET"),
-        scope="user-read-private",
+        scope=["user-read-private", "user-read-email"],
         callback_port=8080,
     )
 
