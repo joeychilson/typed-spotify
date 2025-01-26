@@ -67,7 +67,6 @@ from typed_spotify.models import (
     PlaybackQueue,
     # History Models
     PlayHistory,
-    PlayHistoryPage,
     # Category Models
     Category,
     # Search Models
@@ -151,7 +150,6 @@ __all__ = [
     "PlaybackQueue",
     # History Models
     "PlayHistory",
-    "PlayHistoryPage",
     # Category Models
     "Category",
     # Search Models

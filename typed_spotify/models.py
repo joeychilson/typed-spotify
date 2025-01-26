@@ -65,19 +65,19 @@ class Paging[T](BaseModel):
     href: str
     items: List[T]
     limit: int
+    offset: Optional[int] = None
     next: Optional[str] = None
-    offset: int
     previous: Optional[str] = None
-    total: int
+    total: Optional[int] = None
 
 
 class CursorPaging(BaseModel, Generic[T]):
     href: str
     items: List[T]
     limit: int
-    next: Optional[str] = None
     cursors: Cursor
-    total: int
+    next: Optional[str] = None
+    total: Optional[int] = None
 
 
 class SavedItem[T](BaseModel):
@@ -426,15 +426,6 @@ class PlayHistory(BaseModel):
     track: Track
     played_at: datetime
     context: Optional[PlaybackContext] = None
-
-
-class PlayHistoryPage(BaseModel):
-    href: str
-    limit: int
-    next: Optional[str] = None
-    cursors: Cursors
-    total: int
-    items: List[PlayHistory]
 
 
 # Category Models

@@ -28,7 +28,7 @@ from typed_spotify.models import (
     Paging,
     PlaybackQueue,
     PlaybackState,
-    PlayHistoryPage,
+    PlayHistory,
     Playlist,
     PlaylistSnapshotId,
     PlaylistTrack,
@@ -626,7 +626,7 @@ class SpotifyClient:
 
     async def get_recently_played(
         self, limit: int = 20, after: Optional[int] = None, before: Optional[int] = None
-    ) -> PlayHistoryPage:
+    ) -> Paging[PlayHistory]:
         """Get the user's recently played tracks.
 
         Scopes:
@@ -648,7 +648,9 @@ class SpotifyClient:
         if before:
             params["before"] = before
 
-        return await self._request("GET", "/me/player/recently-played", params=params, response_model=PlayHistoryPage)
+        return await self._request(
+            "GET", "/me/player/recently-played", params=params, response_model=Paging[PlayHistory]
+        )
 
     async def get_queue(self) -> PlaybackQueue:
         """Get the user's queue.
