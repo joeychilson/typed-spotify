@@ -82,57 +82,24 @@ class CursorPaging(BaseModel, Generic[T]):
 
 class SavedItem[T](BaseModel):
     added_at: datetime
-    item: T = Field(
-        validation_alias=AliasChoices(
-            "albums",
-            "artists",
-            "tracks",
-            "shows",
-            "episodes",
-            "audiobooks",
-        )
-    )
+    item: T = Field(validation_alias=AliasChoices("albums", "artists", "tracks", "shows", "episodes", "audiobooks"))
 
 
 class ItemList[T](BaseModel):
     items: List[Optional[T]] = Field(
-        validation_alias=AliasChoices(
-            "categories",
-            "albums",
-            "artists",
-            "tracks",
-            "shows",
-            "episodes",
-            "audiobooks",
-        )
+        validation_alias=AliasChoices("categories", "albums", "artists", "tracks", "shows", "episodes", "audiobooks")
     )
 
 
 class CursorPagingResponse[T](BaseModel):
     items: CursorPaging[T] = Field(
-        validation_alias=AliasChoices(
-            "categories",
-            "albums",
-            "artists",
-            "tracks",
-            "shows",
-            "episodes",
-            "audiobooks",
-        )
+        validation_alias=AliasChoices("categories", "albums", "artists", "tracks", "shows", "episodes", "audiobooks")
     )
 
 
 class PagingResponse[T](BaseModel):
     items: Paging[T] = Field(
-        validation_alias=AliasChoices(
-            "categories",
-            "albums",
-            "artists",
-            "tracks",
-            "shows",
-            "episodes",
-            "audiobooks",
-        )
+        validation_alias=AliasChoices("categories", "albums", "artists", "tracks", "shows", "episodes", "audiobooks")
     )
 
 
