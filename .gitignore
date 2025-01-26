@@ -11,3 +11,9 @@ wheels/
 
 # macOS
 .DS_Store
+
+# Spotify token
+spotify_token.json
+
+# Test
+test/

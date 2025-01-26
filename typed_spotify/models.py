@@ -242,16 +242,6 @@ class PlaylistTrack(BaseModel):
     track: Optional[Union[Track, "Episode"]] = None
 
 
-class PlaylistTrackObject(BaseModel):
-    items: List[PlaylistTrack]
-    href: str
-    limit: int
-    next: Optional[str] = None
-    offset: int
-    previous: Optional[str] = None
-    total: int
-
-
 class SimplifiedPlaylist(BaseModel):
     id: str
     snapshot_id: str
@@ -270,7 +260,7 @@ class SimplifiedPlaylist(BaseModel):
 
 class Playlist(SimplifiedPlaylist):
     followers: Followers
-    tracks: PlaylistTrackObject
+    tracks: Paging[PlaylistTrack]
 
 
 class PlaylistSnapshotId(BaseModel):
@@ -383,7 +373,7 @@ class Chapter(SimplifiedChapter):
 
 # Playback Models
 class PlaybackContext(BaseModel):
-    type: Literal["artist", "playlist", "album", "show"]
+    type: Literal["artist", "album", "collection", "playlist", "show"]
     href: str
     external_urls: ExternalUrls
     uri: str
