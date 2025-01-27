@@ -5,6 +5,7 @@ from typing import Any, Dict, Optional, List, Literal, Type, Union
 
 from httpx import AsyncClient, HTTPError
 
+from typed_spotify.auth import SpotifyAuth
 from typed_spotify.exceptions import (
     AuthenticationError,
     APIError,
@@ -55,11 +56,11 @@ logger = logging.getLogger(__name__)
 class SpotifyClient:
     """Spotify API client."""
 
-    def __init__(self, access_token: str, request_timeout: float = 30.0):
+    def __init__(self, auth: SpotifyAuth, request_timeout: float = 30.0):
         """Initialize the client with authentication handler."""
+        self.auth = auth
         self.client = AsyncClient(
             base_url="https://api.spotify.com/v1",
-            headers={"Authorization": f"Bearer {access_token}"},
             timeout=request_timeout,
         )
 
@@ -1792,7 +1793,13 @@ class SpotifyClient:
         retries = 0
         while True:
             try:
+                access_token = await self.auth.get_access_token()
+
                 response = await self.client.request(
+                    headers={
+                        "Authorization": f"Bearer {access_token}",
+                        "Content-Type": "application/json",
+                    },
                     method=method,
                     url=path,
                     params=params,

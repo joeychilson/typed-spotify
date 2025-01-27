@@ -21,9 +21,7 @@ async def main():
         callback_port=8080,
     )
 
-    access_token = await auth.get_access_token()
-
-    client = SpotifyClient(access_token=access_token)
+    client = SpotifyClient(auth=auth)
 
     response = await client.get_current_user()
     print(response)
