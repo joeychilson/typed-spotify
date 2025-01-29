@@ -37,10 +37,11 @@ class Token(BaseModel):
         return datetime.now(timezone.utc) >= (self.expires_at - timedelta(seconds=30))
 
     @field_validator("expires_at", mode="before")
-    def set_expires_at(cls, v: Optional[datetime], values: dict) -> datetime:
+    def set_expires_at(cls, v: Optional[datetime], info) -> Optional[datetime]:
         """Set expires_at if not provided using expires_in."""
-        if not v and "expires_in" in values:
-            return datetime.now(timezone.utc) + timedelta(seconds=values["expires_in"] - 60)
+        context = info.data
+        if not v and "expires_in" in context:
+            return datetime.now(timezone.utc) + timedelta(seconds=context["expires_in"] - 60)
         return v
 
 
@@ -82,7 +83,7 @@ class MemoryTokenStorage(TokenStorage):
 class FileTokenStorage(TokenStorage):
     """File-based token storage implementation."""
 
-    def __init__(self, token_path: str = "spotify_token.json"):
+    def __init__(self, token_path: str = ".spotify"):
         self.token_path = Path(token_path)
 
     async def save_token(self, token: Token) -> None:

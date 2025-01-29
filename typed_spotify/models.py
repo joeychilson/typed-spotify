@@ -61,7 +61,7 @@ class Narrator(BaseModel):
 
 
 # Generic Models
-class Paging[T](BaseModel):
+class Paging(BaseModel, Generic[T]):
     href: str
     items: List[T]
     limit: int
@@ -80,24 +80,24 @@ class CursorPaging(BaseModel, Generic[T]):
     total: Optional[int] = None
 
 
-class SavedItem[T](BaseModel):
+class SavedItem(BaseModel, Generic[T]):
     added_at: datetime
     item: T = Field(validation_alias=AliasChoices("albums", "artists", "tracks", "shows", "episodes", "audiobooks"))
 
 
-class ItemList[T](BaseModel):
+class ItemList(BaseModel, Generic[T]):
     items: List[Optional[T]] = Field(
         validation_alias=AliasChoices("categories", "albums", "artists", "tracks", "shows", "episodes", "audiobooks")
     )
 
 
-class CursorPagingResponse[T](BaseModel):
+class CursorPagingResponse(BaseModel, Generic[T]):
     items: CursorPaging[T] = Field(
         validation_alias=AliasChoices("categories", "albums", "artists", "tracks", "shows", "episodes", "audiobooks")
     )
 
 
-class PagingResponse[T](BaseModel):
+class PagingResponse(BaseModel, Generic[T]):
     items: Paging[T] = Field(
         validation_alias=AliasChoices("categories", "albums", "artists", "tracks", "shows", "episodes", "audiobooks")
     )
