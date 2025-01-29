@@ -1,14 +1,14 @@
 import asyncio
 import logging
 from json import JSONDecodeError
-from typing import Any, Dict, Optional, List, Literal, Type, Union
+from typing import Any, Dict, List, Literal, Optional, Type, Union
 
 from httpx import AsyncClient, HTTPError
 
 from typed_spotify.auth import SpotifyAuth
 from typed_spotify.exceptions import (
-    AuthenticationError,
     APIError,
+    AuthenticationError,
     RateLimitError,
     ResourceNotFoundError,
     ValidationError,
@@ -21,12 +21,14 @@ from typed_spotify.models import (
     Category,
     Chapter,
     CursorPaging,
+    CursorPagingResponse,
     Device,
     Episode,
     Image,
     ItemList,
     Markets,
     Paging,
+    PagingResponse,
     PlaybackQueue,
     PlaybackState,
     PlayHistory,
@@ -46,8 +48,6 @@ from typed_spotify.models import (
     SimplifiedUser,
     Track,
     User,
-    PagingResponse,
-    CursorPagingResponse,
 )
 
 logger = logging.getLogger(__name__)

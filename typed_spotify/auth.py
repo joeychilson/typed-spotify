@@ -7,7 +7,7 @@ import webbrowser
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Optional, Dict, Union, List
+from typing import Dict, List, Optional, Union
 from urllib.parse import urlencode
 
 from aiohttp import web

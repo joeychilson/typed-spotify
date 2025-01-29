@@ -1,7 +1,7 @@
 from datetime import datetime
-from typing import List, Optional, Literal, Union, Generic, TypeVar
+from typing import Generic, List, Literal, Optional, TypeVar, Union
 
-from pydantic import AliasChoices, BaseModel, RootModel, Field
+from pydantic import AliasChoices, BaseModel, Field, RootModel
 
 T = TypeVar("T")
 
